@@ -11,7 +11,7 @@ var tetha = 0.0, edgeSize = 20, padding = 0.15;
 var cubeSize = edgeSize + (edgeSize - 1) * padding;
 var halfCubeSize = cubeSize/2;
 
-var BACKGROUND_COLOR = 0x000000, BODY_COLOR = 0xFF0000, HEAD_COLOR = 0x004D40, score = 0;
+var BACKGROUND_COLOR = 0x222222, BODY_COLOR = 0xFF0000, HEAD_COLOR = 0x004D40, score = 0;
 
 var lightPos = [new THREE.Vector3(0,50,20), new THREE.Vector3(0,15,-20), new THREE.Vector3(-20,15,20), new THREE.Vector3(20,-15,0)];
 
@@ -22,6 +22,33 @@ var cube = new THREE.BoxGeometry( 1, 1, 1 );
 var gameCube = new THREE.BoxGeometry( cubeSize, cubeSize, cubeSize );
 var direction = new THREE.Vector3(1, 0, 0);
 
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+var pointLight = new THREE.PointLight(0xffffff, 1, 100);
+pointLight.position.set(0, 50, 20);
+pointLight.castShadow = true;
+scene.add(pointLight);
+
+var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(0, 1, 0);
+directionalLight.castShadow = true;
+scene.add(directionalLight);
+
+var spotLight = new THREE.SpotLight(0xffffff, 1);
+spotLight.position.set(0, 30, 0);
+spotLight.angle = Math.PI / 4;
+spotLight.penumbra = 0.05;
+spotLight.decay = 2;
+spotLight.distance = 200;
+spotLight.castShadow = true;
+scene.add(spotLight);
+
+var fogColor = new THREE.Color(0x000000);
+var fogNear = 10;
+var fogFar = 100;
+
+scene.fog = new THREE.Fog(fogColor, fogNear, fogFar);
 
 scene.background = new THREE.Color( BACKGROUND_COLOR );
 
