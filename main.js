@@ -5,13 +5,15 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 var clock = new THREE.Clock(), text = document.createElement("div");
 controls.enableKeys = false;
 
+var group=new THREE.Group()
+
 var mov = 5;
 var delta = 1 / mov;
 var tetha = 0.0, edgeSize = 20, padding = 0.15;
 var cubeSize = edgeSize + (edgeSize - 1) * padding;
 var halfCubeSize = cubeSize/2;
 
-var BACKGROUND_COLOR = 0x000000, BODY_COLOR = 0xFF0000, HEAD_COLOR = 0x004D40, score = 0;
+var BACKGROUND_COLOR = 0x000000, BODY_COLOR = 0xFFFFFF, HEAD_COLOR = 0x004D40, score = 0;
 
 var lightPos = [new THREE.Vector3(0,50,20), new THREE.Vector3(0,15,-20), new THREE.Vector3(-20,15,20), new THREE.Vector3(20,-15,0)];
 
@@ -31,9 +33,35 @@ camera.position.y = 30;
 cube.center();
 
 function init(){
+    var skybox =new THREE.CubeTextureLoader().load([
+        "image/indigo_rt.jpg",
+        "image/indigo_lf.jpg",
+        "image/indigo_up.jpg",
+        "image/indigo_dn.jpg",
+        "image/indigo_ft.jpg",
+        "image/indigo_bk.jpg"])
+    scene.background=skybox
+    const groundGeometry = new THREE.BoxGeometry(100, 2, 100);
+    const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.receiveShadow = true;
+    groundMesh.position.y = -30;
+    scene.add(groundMesh)
 
+    const axesHelper = new THREE.AxesHelper(10); // Creates an AxesHelper with a size of 10 units
+    scene.add(axesHelper);
+ 
     renderer.setSize(WIDTH, HEIGHT);
     document.body.appendChild(renderer.domElement);
+
+    // var spot= new THREE.SpotLight(0xffffff,1, Math.PI/4,0)
+    // spot.position.set(0,10,0);
+    // scene.add(spot);
+     const spotLight = new THREE.SpotLight( 0xffff00,200,130,Math.PI/6,0);
+     spotLight.position.set( 0, 70, 0 );
+     scene.add( spotLight );
+     var spotLightHelper = new THREE.SpotLightHelper( spotLight );
+     scene.add( spotLightHelper );
 
     lightPos.forEach(function(v){
         var light = new THREE.PointLight(0xffffff, 1, 100);
@@ -48,7 +76,7 @@ function init(){
 
     var appleCubeMaterial = new THREE.MeshPhongMaterial( { color: 0xc62828} );
     apple = new Cube(spawnAppleVector(), appleCubeMaterial, scene);
-    var edgesMaterial = new THREE.LineBasicMaterial( { color: 0xffffff } );
+    var edgesMaterial = new THREE.LineBasicMaterial( { color: 0xff0000 } );
     new Cube(new THREE.Vector3(0,0,0), edgesMaterial, scene, gameCube, true).setPosition(0,0,0);
 
     text.style.position = "absolute";
@@ -166,7 +194,7 @@ function render(){
         tetha = 0;
     }
 
-    renderer.render(scene, camera);
+     renderer.render(scene, camera);
 }
 
 document.addEventListener("keydown", function(e){
